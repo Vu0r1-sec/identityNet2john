@@ -1,6 +1,13 @@
 #! /usr/bin/env python3
 
-"""identity2john.py convert asp.Net identity password hashes to john crackable"""
+/*
+ * This software is Copyright (c) 2023 Vu0r1 <vu0r1-sec at proton.me>,
+ * and it is hereby released to the general public under the following terms:
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted.
+ */
+
+"""identity2john.py convert defaults ASP.Net (Core or not) Identity password hashes to john crackable"""
 
 import os
 import sys
@@ -40,16 +47,16 @@ def process_hash_v3(bin):
 		return 0
 
 	enc = bin[1:5]
-	iterations = bin[5:9]
+	iterations = int.from_bytes(bin[5:9])
 	salt = bin[13:29]
 	hash = bin[29:61]
 	
 	if enc == b'\x00\x00\x00\x00':
-		return "$pbkdf2-hmac-sha1$%i.%s.%s" % (int.from_bytes(iterations), salt.hex(), hash.hex())
+		return "$pbkdf2-hmac-sha1$%i.%s.%s" % (iterations, salt.hex(), hash.hex())
 	elif enc == b'\x00\x00\x00\x01':
-		return "$pbkdf2-sha256$%i$%s$%s" % (int.from_bytes(iterations), john_base64_encode(salt), john_base64_encode(hash))
+		return "$pbkdf2-sha256$%i$%s$%s" % (iterations, john_base64_encode(salt), john_base64_encode(hash))
 	elif enc == b'\x00\x00\x00\x02':
-		return "$pbkdf2-hmac-sha512$%i.%s.%s"% (int.from_bytes(iterations), salt.hex(), hash.hex())
+		return "$pbkdf2-hmac-sha512$%i.%s.%s"% (iterations, salt.hex(), hash.hex())
 	else:
 		return 0
 		
@@ -80,7 +87,9 @@ def process_hash(hash):
 
 if __name__ == "__main__":
 	if len(sys.argv) < 2:
-		sys.stderr.write("Usage: %s <file>\n" % sys.argv[0])
+		sys.stderr.write("Usage: %s [Extract from database file(s)]\n" % sys.argv[0])
+		sys.stderr.write("\t line format : [user:]base64_hash\n" % sys.argv[0])
 		sys.exit(1)
 
-	process_file(sys.argv[1])
+	for i in range(1, len(sys.argv)):
+		process_file(sys.argv[i])
