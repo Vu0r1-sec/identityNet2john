@@ -1,11 +1,9 @@
 #! /usr/bin/env python3
 
-/*
- * This software is Copyright (c) 2023 Vu0r1 <vu0r1-sec at proton.me>,
- * and it is hereby released to the general public under the following terms:
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted.
- */
+# This software is Copyright (c) 2023 Vu0r1 <vu0r1-sec at proton.me>,
+# and it is hereby released to the general public under the following terms:
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted.
 
 """identity2john.py convert defaults ASP.Net (Core or not) Identity password hashes to john crackable"""
 
